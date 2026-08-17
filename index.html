@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>手机心理学疗愈卡片</title>
+  <style>
+    :root {
+      --cream: #FDFBF7;
+      --card: #FFF7ED;
+      --ink: #5F4B3F;
+      --muted: #9A7B68;
+      --accent: #C98F6A;
+      --accent-deep: #A96F50;
+      --ring: rgba(201, 143, 106, 0.18);
+      --shadow: 0 22px 60px rgba(95, 75, 63, 0.12), 0 8px 22px rgba(95, 75, 63, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 24px 16px;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 226, 196, 0.54), transparent 34%),
+        radial-gradient(circle at 88% 88%, rgba(235, 203, 178, 0.48), transparent 36%),
+        var(--cream);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    main {
+      width: min(100%, 430px);
+      text-align: center;
+    }
+
+    .counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 8px 14px;
+      border: 1px solid rgba(201, 143, 106, 0.16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.48);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      backdrop-filter: blur(12px);
+    }
+
+    .counter::before {
+      content: "✦";
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 8vw, 38px);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin: 0 auto 26px;
+      max-width: 22em;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .scene {
+      perspective: 1200px;
+      min-height: 350px;
+      margin: 0 auto 24px;
+    }
+
+    .card {
+      position: relative;
+      display: grid;
+      align-content: center;
+      min-height: 350px;
+      padding: 34px 28px;
+      border: 1px solid rgba(255, 255, 255, 0.74);
+      border-radius: 32px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 247, 237, 0.92)),
+        var(--card);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transition: transform 620ms cubic-bezier(.2,.75,.18,1), opacity 360ms ease;
+    }
+
+    .card::before,
+    .card::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .card::before {
+      width: 170px;
+      height: 170px;
+      top: -88px;
+      right: -78px;
+      background: rgba(255, 211, 169, 0.38);
+    }
+
+    .card::after {
+      width: 96px;
+      height: 96px;
+      left: -38px;
+      bottom: -34px;
+      background: rgba(201, 143, 106, 0.13);
+    }
+
+    .card.flipping {
+      opacity: 0.86;
+      transform: rotateY(180deg) scale(0.985);
+    }
+
+    .tag {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 22px;
+      color: var(--accent-deep);
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    .quote {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(22px, 6.25vw, 29px);
+      line-height: 1.58;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .hint {
+      position: relative;
+      z-index: 1;
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    button {
+      width: 100%;
+      min-height: 56px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #D79B73, #B97856);
+      color: #FFFDFC;
+      box-shadow: 0 12px 26px rgba(185, 120, 86, 0.25);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 8px 18px rgba(185, 120, 86, 0.22);
+    }
+
+    button:focus-visible {
+      outline: 4px solid var(--ring);
+      outline-offset: 4px;
+    }
+
+    .footer-note {
+      margin: 16px 0 0;
+      color: rgba(154, 123, 104, 0.82);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card, button { transition: none; }
+      .card.flipping { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main aria-label="心理学疗愈卡片抽取器">
+    <div class="counter" id="counter">卡库已收录 50/50 能量卡</div>
+    <h1>今日疗愈卡</h1>
+    <p class="subtitle">给此刻的自己一点镜映、靠近与温柔的内化。</p>
+
+    <section class="scene" aria-live="polite">
+      <article class="card" id="card">
+        <div class="tag" id="tag">#镜映与被看见</div>
+        <p class="quote" id="quote">你不需要先变得完整，才值得被看见；被温柔地看见，本身就在修复完整感。</p>
+        <div class="hint">深呼吸一次，把这句话留在身体里。</div>
+      </article>
+    </section>
+
+    <button type="button" id="drawButton">抽取今日疗愈卡</button>
+    <p class="footer-note">若此刻情绪很重，请同时联系可信任的人或专业支持。</p>
+  </main>
+
+  <script>
+    const cards = [
+      { tag: "#镜映与被看见", quote: "你不需要先证明自己很好，才配得到回应；被准确地看见，是心灵重新相信世界的起点。" },
+      { tag: "#镜映与被看见", quote: "当有人能说出你心里未成形的感受，你会慢慢知道：原来我的存在不是噪音，而是有意义的信号。" },
+      { tag: "#镜映与被看见", quote: "真正的镜映不是夸你完美，而是在你混乱、羞怯、破碎时，仍然确认你值得被理解。" },
+      { tag: "#镜映与被看见", quote: "你渴望被看见，不是太依赖；那是自体在寻找一束能帮助它站稳的光。" },
+      { tag: "#镜映与被看见", quote: "今天请允许自己被自己的目光接住：我看见我的累，也看见我仍在努力活着。" },
+      { tag: "#镜映与被看见", quote: "如果曾经没有人回应你的喜悦，今天你可以轻轻对自己说：这份喜悦很珍贵，我愿意为它停留。" },
+      { tag: "#镜映与被看见", quote: "被忽略过的人，常会怀疑自己的感受。请记得：感受出现，就已经值得被认真对待。" },
+      { tag: "#镜映与被看见", quote: "你真正需要的不是所有人都懂你，而是先有一个地方，允许你完整地显现。" },
+      { tag: "#理想化与安全感", quote: "可以依靠并不等于软弱；心灵需要稳定的靠山，才能长出探索世界的勇气。" },
+      { tag: "#理想化与安全感", quote: "当你想靠近一个更强大的存在时，也许是在为内心寻找秩序、边界和安心。" },
+      { tag: "#理想化与安全感", quote: "健康的理想化会让你感到被托住，而不是被要求消失；好的靠山会帮助你成为你自己。" },
+      { tag: "#理想化与安全感", quote: "你可以把今天交给一种更大的稳定：大地托住脚步，呼吸托住身体，时间托住尚未完成的你。" },
+      { tag: "#理想化与安全感", quote: "安全感不是永远不害怕，而是害怕时知道：我仍有地方可回，有力量可借。" },
+      { tag: "#理想化与安全感", quote: "曾经的靠山也许不够稳，但你正在把可靠、清醒和慈悲一点点内化成自己的脊梁。" },
+      { tag: "#理想化与安全感", quote: "你无需独自扛起一切。允许自己寻找支持，是自体在学习更成熟的坚强。" },
+      { tag: "#理想化与安全感", quote: "愿你遇见的权威不是压迫你，而是让你知道：强大也可以温柔，边界也可以有爱。" },
+      { tag: "#孪生与共鸣", quote: "你并不孤单。世界上有人也曾在相似的夜里，抱着相似的心事，慢慢等到天亮。" },
+      { tag: "#孪生与共鸣", quote: "孪生感像一句安静的确认：原来不是只有我这样，原来我的人性可以被同类理解。" },
+      { tag: "#孪生与共鸣", quote: "当你发现有人与你同频，羞耻会松动，孤岛会出现桥，心也会重新愿意靠岸。" },
+      { tag: "#孪生与共鸣", quote: "你不必把自己的敏感解释成错误；也许它只是你与世界深度共鸣的方式。" },
+      { tag: "#孪生与共鸣", quote: "被共鸣不是被复制，而是有人在差异中仍能说：我懂那种感觉，我愿意陪你待一会儿。" },
+      { tag: "#孪生与共鸣", quote: "请把‘我怎么会这样’换成‘原来人也会这样’；这一点转念，足以让羞耻变轻。" },
+      { tag: "#孪生与共鸣", quote: "你身上的某些柔软，可能正是别人寻找同伴时最需要看见的灯。" },
+      { tag: "#孪生与共鸣", quote: "当你感到与人类相连，内在那个被放逐的小孩，会开始相信自己并没有被世界遗弃。" },
+      { tag: "#自我接纳", quote: "接纳不是放弃改变，而是停止用敌意驱赶自己；真正的生长，总从允许此刻开始。" },
+      { tag: "#自我接纳", quote: "你可以一边不满意，一边不羞辱自己；温柔并不会削弱改变，温柔会让改变可持续。" },
+      { tag: "#自我接纳", quote: "那些你想藏起来的部分，往往只是太久没有被好好理解，而不是不值得存在。" },
+      { tag: "#自我接纳", quote: "今天不必成为更好的版本。今天只要承认：这个版本的我，也已经很努力。" },
+      { tag: "#自我接纳", quote: "你不是由创伤定义的人，你是带着创伤仍在寻找爱、边界和自由的人。" },
+      { tag: "#自我接纳", quote: "允许自己有需求，是从空洞走向真实；需求不是麻烦，需求是生命仍在发声。" },
+      { tag: "#自我接纳", quote: "你可以不再把脆弱当成失败。脆弱只是心在说：我需要慢一点，需要被照顾。" },
+      { tag: "#自我接纳", quote: "自我接纳不是给所有行为找理由，而是在负责之前，先不把自己判成无价值。" },
+      { tag: "#恰当挫折与内化", quote: "恰当的挫折不是抛弃你，而是让你在可承受的失望里，长出自己的稳定。" },
+      { tag: "#恰当挫折与内化", quote: "当世界没有立刻满足你，愿你仍能感到：我可以等待，我没有因此被否定。" },
+      { tag: "#恰当挫折与内化", quote: "一次小小的失落，也可能成为内化的入口：原来没有外在回应时，我也能陪自己。" },
+      { tag: "#恰当挫折与内化", quote: "成长不是再也不需要别人，而是把曾经被别人借给你的安定，慢慢变成自己的能力。" },
+      { tag: "#恰当挫折与内化", quote: "如果今天没有得到想要的回应，请先别急着判定自己不重要；也许只是关系有边界，爱仍然存在。" },
+      { tag: "#恰当挫折与内化", quote: "失望被温柔地消化之后，会变成一种新力量：我能承受不完美，也能继续亲近生活。" },
+      { tag: "#恰当挫折与内化", quote: "你正在学习一种更深的安全：外界有时不稳，但我可以把自己带回呼吸、现实与当下。" },
+      { tag: "#恰当挫折与内化", quote: "不是所有缺席都意味着不爱。成熟的心会慢慢分辨：失望、边界和遗弃并不相同。" },
+      { tag: "#镜映与自尊", quote: "你的价值不需要在别人热烈时才成立；安静无人处，你仍然是一个值得被珍惜的人。" },
+      { tag: "#镜映与自尊", quote: "被赞美当然美好，但更深的修复是：即使没人鼓掌，我也能承认自己的真实努力。" },
+      { tag: "#理想化与内在靠山", quote: "请在心里安放一个温柔而坚定的形象：它不替你活，却在你颤抖时提醒你可以站稳。" },
+      { tag: "#理想化与内在靠山", quote: "你曾向外寻找的可靠，正在一次次练习中回到体内，成为你自己的沉着和方向。" },
+      { tag: "#孪生与归属", quote: "归属感不是变得和所有人一样，而是在某些相似的脉搏里，确认自己属于人间。" },
+      { tag: "#孪生与归属", quote: "你以为只有自己笨拙，其实许多人都在学习如何爱、如何说不、如何不再逃离自己。" },
+      { tag: "#自我接纳与边界", quote: "接纳自己，也包括接纳自己的边界：我可以善良，但不必用耗尽来证明善良。" },
+      { tag: "#自我接纳与边界", quote: "你有权选择靠近，也有权选择退后。边界不是冷漠，是让爱不被透支的容器。" },
+      { tag: "#挫折耐受", quote: "此刻的不顺不是你整个人生的判决。它只是今天的一段天气，而你比天气更辽阔。" },
+      { tag: "#挫折耐受", quote: "请允许修复以很小的方式发生：喝水、睡觉、走路、求助，都是心灵重新组织自己的路径。" }
+    ];
+
+    const counter = document.getElementById("counter");
+    const card = document.getElementById("card");
+    const tag = document.getElementById("tag");
+    const quote = document.getElementById("quote");
+    const drawButton = document.getElementById("drawButton");
+    let lastIndex = 0;
+
+    counter.textContent = `卡库已收录 ${cards.length}/${cards.length} 能量卡`;
+
+    function pickCardIndex() {
+      if (cards.length <= 1) return 0;
+      let nextIndex = lastIndex;
+      while (nextIndex === lastIndex) {
+        nextIndex = Math.floor(Math.random() * cards.length);
+      }
+      return nextIndex;
+    }
+
+    function drawCard() {
+      const nextIndex = pickCardIndex();
+      card.classList.add("flipping");
+      drawButton.disabled = true;
+
+      window.setTimeout(() => {
+        tag.textContent = cards[nextIndex].tag;
+        quote.textContent = cards[nextIndex].quote;
+        lastIndex = nextIndex;
+        card.classList.remove("flipping");
+        drawButton.disabled = false;
+      }, 310);
+    }
+
+    drawButton.addEventListener("click", drawCard);
+  </script>
+</body>
+</html>
