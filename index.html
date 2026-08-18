@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>今日心理学疗愈抽卡 & 像素宠物小屋</title>
+  <style>
+    :root {
+      --cream: #f7f0e6;
+      --paper: #fffaf2;
+      --sage: #aebca8;
+      --sage-deep: #7d9278;
+      --rose: #d9aaa5;
+      --clay: #c39b82;
+      --sky: #b9c8cf;
+      --ink: #514842;
+      --muted: #867b73;
+      --gold: #d5b878;
+      --shadow: rgba(88, 72, 61, .16);
+      --pixel: 6px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-rounded, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%, rgba(217, 170, 165, .32), transparent 28%),
+        radial-gradient(circle at 92% 4%, rgba(185, 200, 207, .40), transparent 26%),
+        linear-gradient(135deg, #f7f0e6 0%, #efe6da 100%);
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: min(1080px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 34px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.75rem, 4vw, 3.15rem);
+      letter-spacing: .04em;
+      font-weight: 850;
+    }
+
+    .subtitle {
+      margin: 0 auto;
+      max-width: 720px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid rgba(125, 105, 91, .18);
+      border-radius: 30px;
+      background: rgba(255, 250, 242, .78);
+      box-shadow: 0 22px 60px var(--shadow), inset 0 0 0 1px rgba(255,255,255,.45);
+      backdrop-filter: blur(14px);
+    }
+
+    .pet-house {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 20px;
+      padding: 22px;
+      overflow: hidden;
+      min-height: 240px;
+    }
+
+    .room {
+      min-height: 190px;
+      border-radius: 24px;
+      border: 3px solid rgba(81, 72, 66, .12);
+      background:
+        linear-gradient(transparent 72%, rgba(125,146,120,.22) 72%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.20) 0 18px, rgba(217,170,165,.08) 18px 36px),
+        #e8d8ca;
+      display: grid;
+      place-items: center;
+      position: relative;
+      image-rendering: pixelated;
+    }
+
+    .room::before {
+      content: "";
+      position: absolute;
+      left: 22px;
+      top: 22px;
+      width: 54px;
+      height: 44px;
+      border: 4px solid rgba(81,72,66,.16);
+      background: #f8e8b7;
+      box-shadow: inset 0 -15px rgba(185,200,207,.35);
+    }
+
+    .pet {
+      width: 96px;
+      height: 96px;
+      position: relative;
+      transform: translateY(0);
+      animation: breathe 2.2s ease-in-out infinite;
+      filter: drop-shadow(0 12px 0 rgba(81,72,66,.10));
+    }
+
+    .pet.jump { animation: jump .75s ease-in-out 2; }
+
+    .pixel {
+      position: absolute;
+      width: var(--pixel);
+      height: var(--pixel);
+      background: currentColor;
+      box-shadow: var(--pixels);
+    }
+
+    .heart {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1);
+      animation: heartFloat 1.4s ease-out forwards;
+    }
+    .heart::before {
+      content: "";
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: #d98790;
+      box-shadow: 6px 0 #d98790, 0 6px #d98790, 6px 6px #d98790, 12px 6px #d98790, 6px 12px #d98790;
+      image-rendering: pixelated;
+    }
+
+    @keyframes breathe { 50% { transform: translateY(-7px) scale(1.03); } }
+    @keyframes jump { 35% { transform: translateY(-32px) scale(1.04); } 70% { transform: translateY(0) scale(.98,1.03); } }
+    @keyframes heartFloat { 0% { opacity: 0; transform: translate(-50%, 0) scale(.8); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -75px) scale(1.3); } }
+
+    .pet-info { display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+    .pet-title { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .pet-title h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 2rem); }
+    .badge { padding: 7px 12px; border-radius: 999px; background: rgba(174,188,168,.32); color: #5e745a; font-weight: 700; font-size: .9rem; }
+    .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .stat-card { padding: 14px; border-radius: 18px; background: rgba(255,255,255,.48); border: 1px solid rgba(81,72,66,.09); }
+    .stat-card small { color: var(--muted); display:block; margin-bottom: 7px; }
+    .bar { height: 15px; border-radius: 999px; overflow: hidden; background: rgba(81,72,66,.10); border: 2px solid rgba(81,72,66,.10); }
+    .bar span { display: block; height: 100%; width: 80%; border-radius: inherit; background: linear-gradient(90deg, var(--sage), var(--gold), var(--rose)); transition: width .6s ease; }
+    .bubble { min-height: 48px; padding: 12px 16px; border-radius: 18px 18px 18px 4px; background: #fff; color: #665950; box-shadow: 0 10px 24px rgba(88,72,61,.10); line-height: 1.55; }
+
+    .adopt { padding: 24px; text-align: center; }
+    .adopt h2 { margin: 0 0 10px; }
+    .adopt input, select {
+      width: 100%;
+      border: 1px solid rgba(81,72,66,.18);
+      border-radius: 16px;
+      padding: 13px 14px;
+      background: rgba(255,255,255,.72);
+      color: var(--ink);
+      font: inherit;
+      outline: none;
+    }
+    .choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+    .choice { cursor: pointer; padding: 12px 8px; border-radius: 18px; border: 2px solid transparent; background: rgba(255,255,255,.56); transition: .2s; }
+    .choice.selected { border-color: var(--rose); transform: translateY(-2px); box-shadow: 0 12px 20px rgba(217,170,165,.22); }
+    .mini-pet { width: 54px; height: 54px; margin: 0 auto 8px; transform: scale(.58); transform-origin: center; }
+
+    .draw-area { margin-top: 20px; padding: 24px; }
+    .selectors { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+    label { font-weight: 800; display: grid; gap: 8px; color: #6b5f57; }
+
+    .draw-grid { display: grid; grid-template-columns: 290px 1fr; gap: 20px; align-items: stretch; }
+    .card-stage { min-height: 390px; border-radius: 26px; background: linear-gradient(160deg, #d9c5b4, #e9dfd3 48%, #b8c4b3); display: grid; place-items: center; perspective: 1200px; overflow: hidden; position: relative; }
+    .card-stage::after { content:""; position:absolute; inset:-40%; background: conic-gradient(from 20deg, transparent, rgba(255,255,255,.35), transparent 22%); animation: slowSpin 10s linear infinite; }
+    .tarot-card { z-index:1; width: 205px; height: 305px; border-radius: 22px; background: linear-gradient(145deg, #fff8ee, #e9d8c7); border: 4px solid rgba(81,72,66,.14); box-shadow: 0 24px 44px rgba(81,72,66,.22); display: grid; place-items:center; transform-style: preserve-3d; }
+    .tarot-card.loading { animation: ritual 1.5s ease-in-out infinite; }
+    .card-symbol { font-size: 4rem; filter: drop-shadow(0 8px 0 rgba(81,72,66,.08)); }
+    .result { padding: 22px; border-radius: 26px; background: rgba(255,255,255,.56); border: 1px solid rgba(81,72,66,.10); line-height: 1.8; }
+    .result h2 { margin: 0 0 12px; font-size: 1.45rem; }
+    .tag { display:inline-block; margin-bottom: 10px; padding: 8px 12px; border-radius:999px; background: rgba(185,200,207,.45); color:#536973; font-weight:800; }
+    .quote { font-size: 1.08rem; font-weight: 720; color:#5d514a; }
+    .advice { margin-top: 14px; padding: 14px; border-left: 5px solid var(--rose); background: rgba(247,240,230,.65); border-radius: 14px; }
+    .ritual-text { margin-top: 14px; color:#6a5f57; font-weight:800; min-height: 28px; text-align:center; }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font: inherit;
+      font-weight: 900;
+      color: #fffaf2;
+      background: linear-gradient(135deg, #8fa489, #c99d91);
+      box-shadow: 0 14px 26px rgba(125,146,120,.28);
+      transition: transform .18s ease, filter .18s ease;
+    }
+    button:hover { transform: translateY(-2px); filter: brightness(1.03); }
+    button:disabled { opacity:.7; cursor: wait; transform: none; }
+    .primary { width: 100%; margin-top: 16px; }
+
+    footer { text-align:center; color: var(--muted); margin-top: 22px; line-height:1.7; }
+    .hidden { display: none !important; }
+
+    @keyframes ritual { 0%,100% { transform: rotateY(0) translateY(0); box-shadow: 0 24px 44px rgba(81,72,66,.22); } 50% { transform: rotateY(180deg) translateY(-10px); box-shadow: 0 0 46px rgba(255,250,242,.9); } }
+    @keyframes slowSpin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 18px, 1080px); padding-top: 18px; }
+      .pet-house, .draw-grid { grid-template-columns: 1fr; }
+      .selectors, .stats, .choices { grid-template-columns: 1fr; }
+      .room { min-height: 180px; }
+      .card-stage { min-height: 320px; }
+      .tarot-card { width: 176px; height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>今日心理学疗愈抽卡</h1>
+      <p class="subtitle">在自体心理学的共情、镜映与接纳里，为今天的你抽取一份心粮，也喂饱住在像素小屋里的能量宠物。</p>
+    </header>
+
+    <section id="adoptPanel" class="panel adopt">
+      <h2>领养你的能量小宠</h2>
+      <p class="subtitle">给它一个名字，再选择一个会陪你慢慢长大的像素伙伴。</p>
+      <input id="petNameInput" maxlength="12" placeholder="输入小宠名字，如：豆包、月芽、可可" />
+      <div class="choices" id="petChoices"></div>
+      <button id="adoptBtn">确认领养</button>
+    </section>
+
+    <section id="petPanel" class="panel pet-house hidden" aria-live="polite">
+      <div class="room">
+        <div id="pet" class="pet" aria-label="像素宠物"></div>
+        <div id="heartLayer"></div>
+      </div>
+      <div class="pet-info">
+        <div class="pet-title"><h2 id="petName">能量小宠</h2><span class="badge" id="petType">像素伙伴</span></div>
+        <div class="stats">
+          <div class="stat-card"><small>陪伴天数</small><strong id="days">第 1 天</strong></div>
+          <div class="stat-card"><small>心情值 / 能量条</small><strong id="moodText">80 / 100</strong><div class="bar"><span id="moodBar"></span></div></div>
+        </div>
+        <div class="bubble" id="petBubble">今天也谢谢你来到这里，我会安静陪着你。</div>
+      </div>
+    </section>
+
+    <section class="panel draw-area">
+      <div class="selectors">
+        <label>选择星座 / 星象
+          <select id="zodiacSelect">
+            <option value="火象星座">火象星座（白羊 / 狮子 / 射手）</option>
+            <option value="土象星座">土象星座（金牛 / 处女 / 摩羯）</option>
+            <option value="风象星座">风象星座（双子 / 天秤 / 水瓶）</option>
+            <option value="水象星座">水象星座（巨蟹 / 天蝎 / 双鱼）</option>
+            <option value="白羊座">白羊座</option><option value="金牛座">金牛座</option><option value="双子座">双子座</option><option value="巨蟹座">巨蟹座</option><option value="狮子座">狮子座</option><option value="处女座">处女座</option><option value="天秤座">天秤座</option><option value="天蝎座">天蝎座</option><option value="射手座">射手座</option><option value="摩羯座">摩羯座</option><option value="水瓶座">水瓶座</option><option value="双鱼座">双鱼座</option>
+          </select>
+        </label>
+        <label>选择能量类型
+          <select id="energySelect">
+            <option value="E人 - 外向绽放">E人 - 外向绽放</option>
+            <option value="I人 - 内向凝视">I人 - 内向凝视</option>
+            <option value="Ambivert - IE双向切换">Ambivert - IE双向切换</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="draw-grid">
+        <div>
+          <div class="card-stage"><div id="tarotCard" class="tarot-card"><div class="card-symbol">✦</div></div></div>
+          <div id="ritualText" class="ritual-text"></div>
+          <button id="drawBtn" class="primary">抽取今日卡片并喂养宠物</button>
+        </div>
+        <article class="result" id="result">
+          <span class="tag">#等待被看见的今日自体</span>
+          <h2>你的疗愈卡片会出现在这里</h2>
+          <p class="quote">请选择星象与能量类型，然后轻轻点击抽卡。无需表现得很好，你只需要真实地来到此刻。</p>
+          <div class="advice">自体养育小建议：先把手放在胸口，做三次温柔呼吸，告诉自己：“我愿意听见我。”</div>
+        </article>
+      </div>
+    </section>
+
+    <footer>温馨提示：若此刻情绪很重，请同时联系可信任的人或专业支持。</footer>
+  </main>
+
+  <script>
+    const PETS = {
+      cat: { label: "像素小猫", color: "#8f7f70", pixels: "6px 0,12px 0,48px 0,54px 0,0 6px,6px 6px,12px 6px,18px 6px,24px 6px,30px 6px,36px 6px,42px 6px,48px 6px,54px 6px,60px 6px,0 12px,6px 12px,12px 12px,18px 12px,24px 12px,30px 12px,36px 12px,42px 12px,48px 12px,54px 12px,60px 12px,6px 18px,12px 18px,18px 18px,30px 18px,42px 18px,48px 18px,54px 18px,6px 24px,12px 24px,18px 24px,24px 24px,30px 24px,36px 24px,42px 24px,48px 24px,54px 24px,12px 30px,18px 30px,24px 30px,30px 30px,36px 30px,42px 30px,48px 30px,18px 36px,24px 36px,30px 36px,36px 36px,42px 36px" },
+      dog: { label: "像素小狗", color: "#b48b69", pixels: "0 6px,6px 6px,48px 6px,54px 6px,0 12px,6px 12px,12px 12px,18px 12px,24px 12px,30px 12px,36px 12px,42px 12px,48px 12px,54px 12px,6px 18px,12px 18px,18px 18px,30px 18px,42px 18px,48px 18px,12px 24px,18px 24px,24px 24px,30px 24px,36px 24px,42px 24px,12px 30px,18px 30px,24px 30px,30px 30px,36px 30px,42px 30px,18px 36px,24px 36px,30px 36px,36px 36px,12px 42px,18px 42px,36px 42px,42px 42px" },
+      sprite: { label: "像素小精灵", color: "#82a88d", pixels: "24px 0,30px 0,18px 6px,24px 6px,30px 6px,36px 6px,12px 12px,18px 12px,24px 12px,30px 12px,36px 12px,42px 12px,6px 18px,12px 18px,18px 18px,30px 18px,42px 18px,48px 18px,12px 24px,18px 24px,24px 24px,30px 24px,36px 24px,42px 24px,18px 30px,24px 30px,30px 30px,36px 30px,12px 36px,24px 36px,30px 36px,42px 36px,6px 42px,12px 42px,42px 42px,48px 42px" }
+    };
+
+    const CARDS = [
+      { e:"E人 - 外向绽放", q:"你不必一直用热闹证明自己有价值。科胡特所说的镜映，首先可以来自你对自己的温柔注视：我看见你的光，也看见光背后的疲惫。", a:"今天留出十分钟不回应外界，只记录一句：我真正想被怎样看见？" },
+      { e:"E人 - 外向绽放", q:"当你卸下夸大的快乐面具，关系并不会因此坍塌。真正滋养自体的回应，是允许你既明亮，也脆弱。", a:"对一位可信任的人说出一个小小真实感受，不急着包装成笑话。" },
+      { e:"E人 - 外向绽放", q:"你的绽放不是表演任务，而是生命力自然流动。若今天掌声不够，也请把共情还给那个努力发光的自己。", a:"完成一件事后，先肯定过程，而不是立刻寻找下一个舞台。" },
+      { e:"E人 - 外向绽放", q:"被赞美时你可以享受，被忽略时你也仍然完整。自体的凝聚感，不需要每一刻都被外界点亮。", a:"把手机放远十五分钟，感受没有反馈时身体如何慢慢安定。" },
+      { e:"E人 - 外向绽放", q:"你可以热情靠近世界，也可以在过度迎合前停下。共情不是讨好，而是先听见自己的边界。", a:"今天练习说一句柔和的“不”，让能量回到身体里。" },
+      { e:"I人 - 内向凝视", q:"安静不是缺席，而是你保护自体连续性的方式。请允许边界成为小屋的墙，让你在里面慢慢恢复完整。", a:"为自己设定一段免打扰时间，并认真遵守它。" },
+      { e:"I人 - 内向凝视", q:"你不必为了被爱而突然变得外放。真正的镜映会看见你细微的波纹，而不是要求你变成浪潮。", a:"写下今天一个细小感受，并对它说：你被我看见了。" },
+      { e:"I人 - 内向凝视", q:"当你退回内在，并不代表关系失败。那可能是自体在寻找重新凝聚的空间，请温柔接纳这份需要。", a:"把一个社交期待调低一级，选择更适合自己的参与方式。" },
+      { e:"I人 - 内向凝视", q:"你的敏感是一种精密的感受力，不是麻烦。让共情先在心里落座，再决定要不要向外解释。", a:"今天不急着解释自己，只用一句话清楚表达需求。" },
+      { e:"I人 - 内向凝视", q:"你可以慢热，可以谨慎，可以把门开一条缝。自体养育不是逼迫成长，而是在安全里自然舒展。", a:"做一件低刺激的滋养小事：泡茶、散步或整理床边。" },
+      { e:"Ambivert - IE双向切换", q:"你既会在人群中发光，也会在独处里复原。整合不是二选一，而是承认这两个你都值得被镜映。", a:"给今天的社交与独处各留一个位置，不让任何一边被羞耻感驱赶。" },
+      { e:"Ambivert - IE双向切换", q:"当你在外向与内向之间摆动，那不是矛盾，而是自体在寻找合适的调节距离。请相信你的节奏。", a:"每次切换状态前，问自己：我此刻需要连接，还是需要回收能量？" },
+      { e:"Ambivert - IE双向切换", q:"你可以既渴望被看见，又害怕被过度看见。温柔的接纳会让这两种需求坐在同一张桌边。", a:"选择一个安全对象分享三分真实，余下七分留给自己守护。" },
+      { e:"Ambivert - IE双向切换", q:"不稳定的不是你，而是你对环境的敏锐回应。今天让共情成为内在罗盘，帮助你在靠近与退后间保持完整。", a:"用 1 到 10 给当前能量打分，再据此安排一个现实可行的边界。" },
+      { e:"Ambivert - IE双向切换", q:"你不需要固定成某一种人格标签。自体的成熟，是能在多种状态中仍记得：我始终是我。", a:"对着镜子给自己一个微小肯定：我允许自己有不同面向。" }
+    ];
+
+    const petEl = document.getElementById("pet"), choicesEl = document.getElementById("petChoices");
+    const state = JSON.parse(localStorage.getItem("healingPixelPet") || "null");
+    let petState = state, selectedPet = "cat";
+
+    function renderPixel(el, type) { const p = PETS[type] || PETS.cat; el.innerHTML = `<div class="pixel" style="color:${p.color};--pixels:${p.pixels}"></div>`; }
+    function save() { localStorage.setItem("healingPixelPet", JSON.stringify(petState)); }
+    function daysSince(ts) { return Math.max(1, Math.floor((Date.now() - ts) / 86400000) + 1); }
+    function showPet() {
+      document.getElementById("adoptPanel").classList.add("hidden"); document.getElementById("petPanel").classList.remove("hidden");
+      renderPixel(petEl, petState.type); document.getElementById("petName").textContent = petState.name;
+      document.getElementById("petType").textContent = PETS[petState.type].label; document.getElementById("days").textContent = `第 ${daysSince(petState.adoptedAt)} 天`;
+      document.getElementById("moodText").textContent = `${petState.mood} / 100`; document.getElementById("moodBar").style.width = `${petState.mood}%`;
+    }
+    function initChoices() {
+      choicesEl.innerHTML = Object.entries(PETS).map(([key, p]) => `<div class="choice ${key===selectedPet?'selected':''}" data-type="${key}"><div class="mini-pet" id="mini-${key}"></div><strong>${p.label}</strong></div>`).join("");
+      Object.keys(PETS).forEach(k => renderPixel(document.getElementById(`mini-${k}`), k));
+      choicesEl.querySelectorAll(".choice").forEach(c => c.onclick = () => { selectedPet = c.dataset.type; initChoices(); });
+    }
+    initChoices(); if (petState) showPet();
+
+    document.getElementById("adoptBtn").onclick = () => {
+      const name = document.getElementById("petNameInput").value.trim() || "小暖";
+      petState = { name, type: selectedPet, mood: 80, adoptedAt: Date.now() }; save(); showPet();
+    };
+
+    function celebrate() {
+      if (!petState) return;
+      petState.mood = Math.min(100, petState.mood + 8); save(); showPet();
+      petEl.classList.remove("jump"); void petEl.offsetWidth; petEl.classList.add("jump");
+      document.getElementById("petBubble").textContent = ["谢谢你照顾自己，我也被你喂饱啦！", "你的温柔让我长出一点点勇气。", "今天的小屋，因为你回来而亮起来了。", "我会把这份心粮存进暖暖的口袋里。"][(Math.random()*4)|0];
+      const layer = document.getElementById("heartLayer");
+      for (let i=0;i<7;i++) { const h=document.createElement("span"); h.className="heart"; h.style.left=(44+Math.random()*24)+"%"; h.style.top=(46+Math.random()*16)+"%"; h.style.animationDelay=(i*.08)+"s"; layer.appendChild(h); setTimeout(()=>h.remove(),1600); }
+    }
+
+    document.getElementById("drawBtn").onclick = () => {
+      const btn = document.getElementById("drawBtn"), card = document.getElementById("tarotCard"), ritual = document.getElementById("ritualText");
+      btn.disabled = true; card.classList.add("loading"); ritual.textContent = "正在匹配自体能量并生成心粮...";
+      setTimeout(() => {
+        const zodiac = document.getElementById("zodiacSelect").value, energy = document.getElementById("energySelect").value;
+        const pool = CARDS.filter(c => c.e === energy); const picked = pool[(Math.random()*pool.length)|0];
+        document.getElementById("result").innerHTML = `<span class="tag">#${zodiac} · 给正在寻觅镜映的 ${energy.split(" ")[0]}</span><h2>今日自体疗愈卡</h2><p class="quote">${picked.q}</p><div class="advice"><strong>自体养育小建议：</strong>${picked.a}</div>`;
+        ritual.textContent = "匹配完成，今日的心粮已经送达。"; card.classList.remove("loading"); btn.disabled = false; celebrate();
+      }, 1500);
+    };
+  </script>
+</body>
+</html>
