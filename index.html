@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>今日心签 / 心理疗愈抽卡</title>
+  <style>
+    :root {
+      --bg-1: #100f22;
+      --bg-2: #25143a;
+      --ink: #fff7ea;
+      --muted: #cdbfe1;
+      --gold: #f7d68a;
+      --rose: #f4a9b8;
+      --violet: #9f88ff;
+      --teal: #8ee6cf;
+      --paper: #fff0d0;
+      --paper-deep: #e7bd7d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+      --radius-xl: 32px;
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 16% 12%, rgba(247, 214, 138, 0.16), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(159, 136, 255, 0.24), transparent 30%),
+        radial-gradient(circle at 50% 95%, rgba(142, 230, 207, 0.16), transparent 30%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 58%, #160e28);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.45;
+      background-image:
+        radial-gradient(#fff7ea 0.8px, transparent 1px),
+        radial-gradient(#f7d68a 0.9px, transparent 1px);
+      background-size: 72px 72px, 118px 118px;
+      background-position: 0 0, 30px 24px;
+      animation: driftStars 24s linear infinite;
+    }
+
+    @keyframes driftStars { to { transform: translateY(72px); } }
+
+    .app {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0 44px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-end;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--gold);
+      letter-spacing: 0.22em;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 6vw, 5.1rem);
+      line-height: 0.95;
+      text-shadow: 0 12px 34px rgba(0, 0, 0, 0.35);
+    }
+
+    .subtitle {
+      max-width: 560px;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.75fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border: 1px solid rgba(255, 247, 234, 0.13);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.045));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .draw-panel {
+      min-height: 650px;
+      padding: clamp(18px, 3vw, 32px);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .draw-panel::after {
+      content: "";
+      position: absolute;
+      width: 440px;
+      height: 440px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(247, 214, 138, 0.16), transparent 62%);
+      filter: blur(3px);
+    }
+
+    .card-stage {
+      width: min(430px, 100%);
+      perspective: 1200px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .magic-card {
+      min-height: 560px;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(.2,.8,.2,1), filter 0.4s ease;
+      cursor: pointer;
+    }
+
+    .magic-card.flipped { transform: rotateY(180deg); }
+    .magic-card.shuffling { filter: drop-shadow(0 0 26px rgba(247, 214, 138, 0.45)); animation: pulseCard 0.52s ease; }
+    @keyframes pulseCard { 50% { transform: translateY(-8px) scale(1.015); } }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      min-height: 560px;
+      border-radius: 30px;
+      backface-visibility: hidden;
+      overflow: hidden;
+      box-shadow: 0 26px 80px rgba(0, 0, 0, 0.42);
+    }
+
+    .card-back {
+      border: 1px solid rgba(247, 214, 138, 0.42);
+      background:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25% 50%, rgba(255, 255, 255, 0.05) 50% 75%, transparent 75%),
+        radial-gradient(circle at 50% 38%, rgba(247, 214, 138, 0.22), transparent 30%),
+        linear-gradient(145deg, #332052, #181332 68%);
+      background-size: 20px 20px, auto, auto;
+      display: grid;
+      place-items: center;
+      padding: 26px;
+    }
+
+    .sigil {
+      width: 78%;
+      aspect-ratio: 1;
+      border: 1px solid rgba(247, 214, 138, 0.5);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--gold);
+      font-size: 5rem;
+      position: relative;
+    }
+
+    .sigil::before, .sigil::after {
+      content: "✦   ◐   ✧   ◑   ✦";
+      position: absolute;
+      inset: 13%;
+      border: 1px dashed rgba(247, 214, 138, 0.34);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.95rem;
+      letter-spacing: 0.35em;
+    }
+
+    .sigil::after { inset: -9%; transform: rotate(24deg); opacity: 0.55; }
+
+    .tap-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      color: rgba(255, 247, 234, 0.72);
+      font-size: 0.92rem;
+    }
+
+    .card-front {
+      transform: rotateY(180deg);
+      padding: 30px;
+      color: #432b37;
+      background:
+        radial-gradient(circle at 28% 12%, rgba(255, 255, 255, 0.85), transparent 24%),
+        radial-gradient(circle at 82% 82%, rgba(244, 169, 184, 0.34), transparent 26%),
+        linear-gradient(160deg, #fff5dc, #f1cf95 95%);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+    }
+
+    .card-front::before {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border: 1px solid rgba(111, 72, 77, 0.22);
+      border-radius: 22px;
+      pointer-events: none;
+    }
+
+    .card-art {
+      height: 148px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 22px;
+      color: #70405a;
+      background:
+        radial-gradient(circle at 50% 62%, rgba(255,255,255,0.82) 0 16%, transparent 17%),
+        radial-gradient(ellipse at 50% 80%, rgba(142, 230, 207, 0.45), transparent 42%),
+        linear-gradient(135deg, rgba(159, 136, 255, 0.28), rgba(244, 169, 184, 0.32));
+      font-size: 3.5rem;
+    }
+
+    .card-kicker { color: #8a6370; font-size: 0.82rem; letter-spacing: 0.18em; }
+    .card-title { margin: 12px 0 18px; font-size: clamp(1.7rem, 4vw, 2.35rem); line-height: 1.12; }
+    .card-text { margin: 0; font-size: 1.08rem; line-height: 1.95; }
+    .card-advice {
+      margin-top: 24px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.48);
+      line-height: 1.65;
+    }
+
+    .side { display: grid; gap: 18px; }
+    .pet-panel, .selector-panel { padding: 22px; }
+    .section-title { margin: 0 0 14px; font-size: 1.05rem; color: var(--gold); }
+
+    .pet-wrap { position: relative; display: flex; gap: 18px; align-items: center; }
+    .speech {
+      position: absolute;
+      left: 90px;
+      top: -12px;
+      padding: 9px 12px;
+      border-radius: 14px 14px 14px 4px;
+      background: #fff7ea;
+      color: #4d3140;
+      font-size: 0.88rem;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: 0.3s ease;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+      pointer-events: none;
+    }
+    .speech.show { opacity: 1; transform: translateY(0); }
+
+    .pixel-pet {
+      width: 72px;
+      height: 72px;
+      image-rendering: pixelated;
+      display: grid;
+      place-items: center;
+      font-size: 3.1rem;
+      filter: drop-shadow(0 12px 15px rgba(0,0,0,0.28));
+      animation: bob 2.6s ease-in-out infinite;
+    }
+    @keyframes bob { 50% { transform: translateY(-6px); } }
+    .pixel-pet.happy { animation-duration: 1.6s; }
+    .pixel-pet.glow { filter: drop-shadow(0 0 18px rgba(247, 214, 138, 0.75)); }
+    .pet-name { margin: 0 0 6px; font-size: 1.45rem; }
+    .pet-note { margin: 0; color: var(--muted); line-height: 1.6; }
+
+    .energy-row { margin-top: 20px; }
+    .energy-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.9rem; margin-bottom: 9px; }
+    .energy-bar { height: 14px; border-radius: 999px; background: rgba(255,255,255,0.12); overflow: hidden; }
+    .energy-fill { height: 100%; width: 0%; border-radius: inherit; background: linear-gradient(90deg, var(--teal), var(--rose), var(--gold)); transition: width 0.55s ease; }
+
+    .option-group { margin-bottom: 18px; }
+    .option-label { color: var(--muted); font-size: 0.92rem; margin-bottom: 10px; }
+    .options { display: flex; flex-wrap: wrap; gap: 9px; }
+    .pill {
+      border: 1px solid rgba(255, 247, 234, 0.17);
+      background: rgba(255,255,255,0.07);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .pill:hover, .pill.active { border-color: rgba(247, 214, 138, 0.8); background: rgba(247, 214, 138, 0.18); transform: translateY(-1px); }
+
+    .draw-button {
+      width: 100%;
+      border: 0;
+      margin-top: 2px;
+      padding: 15px 18px;
+      border-radius: 18px;
+      color: #25143a;
+      font-size: 1.03rem;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--gold), #ffaeba);
+      box-shadow: 0 12px 32px rgba(247, 214, 138, 0.24);
+      transition: 0.22s ease;
+    }
+    .draw-button:not(:disabled):hover { transform: translateY(-2px); }
+    .draw-button:disabled { cursor: not-allowed; filter: grayscale(0.8); opacity: 0.55; box-shadow: none; }
+    .helper { min-height: 24px; margin: 12px 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(10, 8, 20, 0.72);
+      backdrop-filter: blur(10px);
+    }
+    .modal.show { display: grid; }
+    .modal-card {
+      width: min(420px, 100%);
+      padding: 26px;
+      border-radius: 28px;
+      border: 1px solid rgba(247, 214, 138, 0.3);
+      background: linear-gradient(145deg, #2c1b45, #17142e);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .modal input {
+      width: 100%;
+      margin: 16px 0 12px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.08);
+      color: var(--ink);
+      font-size: 1rem;
+      outline: none;
+    }
+    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .secondary, .primary {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .secondary { color: var(--ink); background: rgba(255,255,255,0.11); }
+    .primary { color: #25143a; background: linear-gradient(135deg, var(--gold), #ffaeba); }
+    .error { min-height: 20px; color: #ffc0cc; font-size: 0.86rem; }
+
+    .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 9; }
+    .confetti i { position: absolute; top: -20px; width: 9px; height: 14px; border-radius: 3px; animation: fall 1.6s ease-in forwards; }
+    @keyframes fall { to { transform: translateY(110vh) rotate(520deg); opacity: 0; } }
+
+    @media (max-width: 860px) {
+      .hero { display: block; }
+      .shell { grid-template-columns: 1fr; }
+      .draw-panel { min-height: 590px; }
+      .magic-card, .card-face { min-height: 500px; }
+      .side { order: 2; }
+      .pet-panel { order: -1; }
+    }
+
+    @media (max-width: 480px) {
+      .app { width: min(100% - 22px, 1180px); padding-top: 24px; }
+      .draw-panel, .pet-panel, .selector-panel { border-radius: 24px; padding: 16px; }
+      .card-front { padding: 22px; }
+      .card-art { height: 122px; }
+      .pet-wrap { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Daily Soft Oracle</p>
+        <h1>今日心签</h1>
+        <p class="subtitle">选一选今天的星星属性和能量状态，翻开一张给自己的小心糖。慢慢来，今天也不用很厉害。</p>
+      </div>
+    </header>
+
+    <section class="shell">
+      <section class="draw-panel panel" aria-label="抽卡区域">
+        <div class="card-stage">
+          <article id="magicCard" class="magic-card" role="button" tabindex="0" aria-label="点击抽卡">
+            <div class="card-face card-back">
+              <div class="sigil">☾</div>
+              <div class="tap-hint">点我翻开今天的心签</div>
+            </div>
+            <div class="card-face card-front">
+              <div id="cardArt" class="card-art">✦</div>
+              <div class="card-kicker">TODAY'S GENTLE CARD</div>
+              <h2 id="cardTitle" class="card-title">一张暖暖的牌在等你</h2>
+              <p id="cardText" class="card-text">先把今天的你选出来，再轻轻点一下。小宠物会陪你一起翻牌。</p>
+              <div id="cardAdvice" class="card-advice">小事：给自己倒一杯喜欢的饮料，先坐稳一会儿。</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <aside class="side">
+        <section class="pet-panel panel" aria-label="宠物陪伴区域">
+          <h3 class="section-title">陪伴小宠物</h3>
+          <div class="pet-wrap">
+            <div id="speech" class="speech">我在呢</div>
+            <div id="petAvatar" class="pixel-pet" aria-hidden="true">🐱</div>
+            <div>
+              <h2 id="petName" class="pet-name">小星</h2>
+              <p id="petNote" class="pet-note">今天也贴贴你。能量越满，我会越开心。</p>
+            </div>
+          </div>
+          <div class="energy-row">
+            <div class="energy-meta"><span>暖暖能量</span><span id="energyText">0/100</span></div>
+            <div class="energy-bar"><div id="energyFill" class="energy-fill"></div></div>
+            <p id="daysText" class="helper">已经陪你 1 天啦</p>
+          </div>
+        </section>
+
+        <section class="selector-panel panel" aria-label="选择器区域">
+          <h3 class="section-title">今天的你像什么？</h3>
+          <div class="option-group">
+            <div class="option-label">星座属性</div>
+            <div class="options" data-group="element">
+              <button class="pill" data-value="earth">土象</button>
+              <button class="pill" data-value="fire">火象</button>
+              <button class="pill" data-value="water">水象</button>
+              <button class="pill" data-value="air">风象</button>
+            </div>
+          </div>
+          <div class="option-group">
+            <div class="option-label">能量类型</div>
+            <div class="options" data-group="energyType">
+              <button class="pill" data-value="i">I人（安静充电型）</button>
+              <button class="pill" data-value="e">E人（外向释放型）</button>
+              <button class="pill" data-value="both">双向型</button>
+            </div>
+          </div>
+          <button id="drawBtn" class="draw-button" disabled>先选一选今天的你吧</button>
+          <p id="helper" class="helper">今日还可抽 5/5 次</p>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <div id="nameModal" class="modal" role="dialog" aria-modal="true" aria-label="给宠物取名">
+    <div class="modal-card">
+      <div id="modalPet" class="pixel-pet" style="margin: 0 auto 10px;">🐱</div>
+      <h2>给陪伴你的小家伙取个名吧</h2>
+      <p class="pet-note">2～6个字符就好，短短的名字最容易被记住。</p>
+      <input id="nameInput" maxlength="6" placeholder="比如：栗栗" />
+      <div id="nameError" class="error"></div>
+      <div class="modal-actions">
+        <button id="randomNameBtn" class="secondary">随机一个</button>
+        <button id="saveNameBtn" class="primary">就叫这个</button>
+      </div>
+    </div>
+  </div>
+  <div id="confetti" class="confetti"></div>
+
+  <script>
+    const STORAGE_KEY = "dailyHealingCard.v1";
+    const MAX_DAILY_DRAWS = 5;
+    const petPool = ["🐱", "🐰", "🐦", "👾"];
+    const namePool = ["栗栗", "团团", "星米", "啾啾", "棉花", "小灯", "莓莓", "咕噜"];
+    const petLines = [
+      "我在呢", "慢慢来呀", "抱一下", "今天很棒", "先喘口气", "给你小花", "别急别急", "心糖到啦", "贴贴你", "亮一点啦",
+      "可以休息", "陪你翻牌", "软软着陆", "喝口水吧", "你没掉队", "小步也算", "我看见啦", "好运冒泡", "轻轻放下", "月亮眨眼",
+      "收好温柔", "别硬撑哦", "今天够了", "一起发光", "满格撒花", "我超开心"
+    ];
+
+    const elementNames = { earth: "土象", fire: "火象", water: "水象", air: "风象" };
+    const typeNames = { i: "安静充电", e: "外向释放", both: "双向流动" };
+    const icons = ["☾", "✦", "☁", "✿", "◐", "♢", "☀", "❀"];
+
+    const starters = {
+      earth: "你已经撑住很多小事了",
+      fire: "你心里那团火还在亮着",
+      water: "你的感受今天有点满",
+      air: "你的脑袋可能转了好久"
+    };
+    const allows = {
+      i: "不想立刻回应谁也没关系，先把自己抱回来。",
+      e: "想说话、想见人、想热闹一点，都可以被好好放出来。",
+      both: "一会儿想靠近，一会儿想安静，这样也很正常。"
+    };
+    const adviceSeeds = {
+      earth: ["整理桌面上最小的一角", "换一双舒服的袜子", "把待办里最轻的一件划掉", "认真吃三口热乎的东西"],
+      fire: ["放一首让你想点头的歌", "给喜欢的人发个表情", "站起来伸展30秒", "把一个小想法写在便签上"],
+      water: ["用温水洗洗手", "把想说的话写给自己看", "抱住枕头待一分钟", "看一眼窗外的天空颜色"],
+      air: ["关掉一个多余页面", "做三次慢慢的呼气", "把脑中杂音写成三行", "走到门口再走回来"]
+    };
+
+    const cardLibrary = buildCards();
+    const state = loadState();
+    let selected = { element: null, energyType: null };
+    let speechTimer = null;
+
+    const $ = (id) => document.getElementById(id);
+    const magicCard = $("magicCard");
+    const drawBtn = $("drawBtn");
+
+    init();
+
+    function buildCards() {
+      const library = {};
+      Object.keys(elementNames).forEach(element => {
+        library[element] = {};
+        Object.keys(typeNames).forEach(type => {
+          library[element][type] = Array.from({ length: 6 }, (_, idx) => ({
+            id: `${element}-${type}-${idx}`,
+            title: `${elementNames[element]} · ${typeNames[type]}的小心糖`,
+            text: `${starters[element]}。${allows[type]}`,
+            advice: `小事：${adviceSeeds[element][idx % adviceSeeds[element].length]}，不用做漂亮，做一点点就好。`,
+            icon: icons[(idx + element.length + type.length) % icons.length]
+          }));
+        });
+      });
+      return library;
+    }
+
+    function todayKey() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function loadState() {
+      const fallback = {
+        date: todayKey(), dailyCount: 0, recentIds: [], energy: 0,
+        petName: "", pet: petPool[Math.floor(Math.random() * petPool.length)],
+        firstSeen: todayKey(), lastVisit: todayKey(), companionDays: 1
+      };
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        const merged = { ...fallback, ...saved };
+        if (merged.date !== todayKey()) {
+          merged.date = todayKey();
+          merged.dailyCount = 0;
+        }
+        if (merged.lastVisit !== todayKey()) {
+          merged.lastVisit = todayKey();
+          merged.companionDays = Math.max(1, (merged.companionDays || 1) + 1);
+        }
+        return merged;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+    function init() {
+      saveState();
+      bindOptions();
+      updatePet();
+      updateDrawButton();
+      if (!state.petName) openNameModal();
+      magicCard.addEventListener("click", drawCard);
+      magicCard.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") drawCard(); });
+      drawBtn.addEventListener("click", drawCard);
+      $("randomNameBtn").addEventListener("click", () => { $("nameInput").value = randomFrom(namePool); $("nameError").textContent = ""; });
+      $("saveNameBtn").addEventListener("click", savePetName);
+    }
+
+    function bindOptions() {
+      document.querySelectorAll(".options").forEach(group => {
+        group.addEventListener("click", (e) => {
+          const btn = e.target.closest(".pill");
+          if (!btn) return;
+          group.querySelectorAll(".pill").forEach(item => item.classList.remove("active"));
+          btn.classList.add("active");
+          selected[group.dataset.group] = btn.dataset.value;
+          updateDrawButton();
+        });
+      });
+    }
+
+    function updateDrawButton() {
+      const remaining = Math.max(0, MAX_DAILY_DRAWS - state.dailyCount);
+      $("helper").textContent = remaining ? `今日还可抽 ${remaining}/${MAX_DAILY_DRAWS} 次` : "今天的心糖已经收完啦，明天再来找我吧";
+      if (!selected.element || !selected.energyType) {
+        drawBtn.disabled = true;
+        drawBtn.textContent = "先选一选今天的你吧";
+      } else if (remaining <= 0) {
+        drawBtn.disabled = true;
+        drawBtn.textContent = "明天再来找我吧";
+      } else {
+        drawBtn.disabled = false;
+        drawBtn.textContent = "抽一张今日心签";
+      }
+    }
+
+    function drawCard() {
+      if (drawBtn.disabled || !selected.element || !selected.energyType) return;
+      const pool = cardLibrary[selected.element][selected.energyType];
+      const candidates = pool.filter(card => !state.recentIds.includes(card.id));
+      const card = randomFrom(candidates.length ? candidates : pool);
+      magicCard.classList.add("shuffling");
+      setTimeout(() => {
+        $("cardTitle").textContent = card.title;
+        $("cardText").textContent = card.text;
+        $("cardAdvice").textContent = card.advice;
+        $("cardArt").textContent = card.icon;
+        magicCard.classList.add("flipped");
+        magicCard.classList.remove("shuffling");
+      }, 260);
+
+      state.dailyCount += 1;
+      state.energy = Math.min(100, (state.energy || 0) + 1);
+      state.recentIds = [card.id, ...state.recentIds.filter(id => id !== card.id)].slice(0, 2);
+      saveState();
+      updateDrawButton();
+      updatePet();
+      say(state.energy === 100 ? "满格撒花" : randomFrom(petLines));
+      if (state.energy === 100) celebrate();
+    }
+
+    function updatePet() {
+      $("petAvatar").textContent = state.pet;
+      $("modalPet").textContent = state.pet;
+      $("petName").textContent = state.petName || "新朋友";
+      $("energyText").textContent = `${state.energy}/100`;
+      $("energyFill").style.width = `${state.energy}%`;
+      $("daysText").textContent = `已经陪你 ${state.companionDays || 1} 天啦`;
+      const avatar = $("petAvatar");
+      avatar.classList.toggle("happy", state.energy >= 35);
+      avatar.classList.toggle("glow", state.energy >= 70);
+      $("petNote").textContent = state.energy >= 70 ? "我好像被你的温柔充亮了。" : state.energy >= 35 ? "暖暖的，今天也在变亮。" : "今天也贴贴你。能量越满，我会越开心。";
+    }
+
+    function say(text) {
+      clearTimeout(speechTimer);
+      const bubble = $("speech");
+      bubble.textContent = text;
+      bubble.classList.add("show");
+      speechTimer = setTimeout(() => bubble.classList.remove("show"), 2600);
+    }
+
+    function openNameModal() {
+      $("nameModal").classList.add("show");
+      $("nameInput").focus();
+    }
+
+    function savePetName() {
+      const value = $("nameInput").value.trim();
+      if ([...value].length < 2 || [...value].length > 6) {
+        $("nameError").textContent = "名字要 2～6 个字符哦。";
+        return;
+      }
+      state.petName = value;
+      saveState();
+      updatePet();
+      $("nameModal").classList.remove("show");
+      say(`${value}来啦`);
+    }
+
+    function celebrate() {
+      const box = $("confetti");
+      box.innerHTML = "";
+      for (let i = 0; i < 42; i++) {
+        const piece = document.createElement("i");
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = randomFrom(["#f7d68a", "#f4a9b8", "#8ee6cf", "#9f88ff"]);
+        piece.style.animationDelay = `${Math.random() * 0.35}s`;
+        box.appendChild(piece);
+      }
+      setTimeout(() => { box.innerHTML = ""; }, 2200);
+    }
+
+    function randomFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  </script>
+</body>
+</html>
